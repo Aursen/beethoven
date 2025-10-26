@@ -1,0 +1,12 @@
+[package]
+name = "beethoven"
+version = "0.1.0"
+edition = "2024"
+
+[features]
+default = ["jupiter", "kamino"]
+jupiter = []
+kamino = []
+
+[dependencies]
+pinocchio = "0.9.2"
