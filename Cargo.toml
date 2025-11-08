@@ -1,7 +1,7 @@
 [package]
 name = "beethoven"
-description = "composable defi"
-version = "0.1.0"
+description = "A Trait-based client that let you compose program extremely easily"
+version = "0.0.1"
 license = "MIT"
 edition = "2024"
 

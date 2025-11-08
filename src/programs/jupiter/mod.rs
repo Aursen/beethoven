@@ -14,6 +14,8 @@ pub struct JupiterEarn;
 
 /// Account context for JupiterEarn's deposit instruction.
 pub struct JupiterEarnDepositAccounts<'info> {
+    /// Target lending program
+    pub lending_program: &'info AccountInfo,
     /// User signer (mutable, signer)
     pub signer: &'info AccountInfo,
     /// User's token account to deposit from (mutable)
@@ -48,8 +50,6 @@ pub struct JupiterEarnDepositAccounts<'info> {
     pub associated_token_program: &'info AccountInfo,
     /// System program
     pub system_program: &'info AccountInfo,
-    /// Target lending program
-    pub lending_program: &'info AccountInfo,
 }
 
 impl<'info> TryFrom<&'info [AccountInfo]> for JupiterEarnDepositAccounts<'info> {
@@ -76,6 +76,7 @@ impl<'info> TryFrom<&'info [AccountInfo]> for JupiterEarnDepositAccounts<'info> 
         }
 
         let [
+            lending_program,
             signer,
             depositor_token_account,
             recipient_token_account,
@@ -93,7 +94,6 @@ impl<'info> TryFrom<&'info [AccountInfo]> for JupiterEarnDepositAccounts<'info> 
             token_program,
             associated_token_program,
             system_program,
-            lending_program,
             ..
         ] = accounts else {
             return Err(ProgramError::NotEnoughAccountKeys);
@@ -198,7 +198,7 @@ impl<'info> Deposit<'info> for JupiterEarn {
         }
 
         let deposit_ix = Instruction {
-            program_id: ctx.lending_program.key(),
+            program_id: &JUPITER_EARN_PROGRAM_ID,
             accounts: &accounts,
             data: unsafe { core::slice::from_raw_parts(instruction_data.as_ptr() as *const u8, 16) },
         };

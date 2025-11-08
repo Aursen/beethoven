@@ -1,7 +1,7 @@
 use core::mem::MaybeUninit;
 
 use pinocchio::{
-    account_info::AccountInfo, cpi::invoke_signed, instruction::{AccountMeta, Instruction, Signer}, program_error::ProgramError, pubkey::Pubkey, ProgramResult
+    account_info::AccountInfo, cpi::invoke_signed, instruction::{AccountMeta, Instruction, Signer}, program_error::ProgramError, ProgramResult
 };
 
 use crate::Deposit;
@@ -21,8 +21,10 @@ pub struct Kamino;
 ///
 /// # Account Order
 /// Accounts must be provided in the exact order listed below. The TryFrom implementation
-/// will validate that at least 17 accounts are present.
+/// will validate that at least 19 accounts are present.
 pub struct KaminoDepositAccounts<'info> {
+    /// Kamino Lending Program (used for optional accounts)
+    pub kamino_lending_program: &'info AccountInfo,
     /// Owner of the obligation (must be signer and writable)
     pub owner: &'info AccountInfo,
     /// The obligation account to deposit collateral into (writable)
@@ -59,8 +61,6 @@ pub struct KaminoDepositAccounts<'info> {
     pub farms_program: &'info AccountInfo,
     /// Scope Oracle
     pub scope_oracle: &'info AccountInfo,
-    /// Kamino Lending Program (used for optional accounts)
-    pub kamino_lending_program: &'info AccountInfo,
     /// Reserve Accounts
     pub reserve_accounts: &'info [AccountInfo],
 }
@@ -89,6 +89,7 @@ impl<'info> TryFrom<&'info [AccountInfo]> for KaminoDepositAccounts<'info> {
         }
 
         let [
+            kamino_lending_program,
             owner,
             obligation,
             lending_market,
@@ -107,7 +108,6 @@ impl<'info> TryFrom<&'info [AccountInfo]> for KaminoDepositAccounts<'info> {
             reserve_farm_state,
             farms_program,
             scope_oracle,
-            kamino_lending_program,
             remaining_accounts @ ..,
         ] = accounts else {
             return Err(ProgramError::NotEnoughAccountKeys);
@@ -180,6 +180,8 @@ impl<'info> Deposit<'info> for Kamino {
         let account_infos = [
             ctx.reserve,
             ctx.kamino_lending_program,
+            ctx.kamino_lending_program,
+            ctx.kamino_lending_program,
             ctx.scope_oracle,
         ];
 
@@ -203,6 +205,8 @@ impl<'info> Deposit<'info> for Kamino {
 
             let account_infos = [
                 ctx.reserve,
+                ctx.kamino_lending_program,
+                ctx.kamino_lending_program,
                 ctx.kamino_lending_program,
                 ctx.scope_oracle,
             ];
@@ -256,6 +260,7 @@ impl<'info> Deposit<'info> for Kamino {
             data: &REFRESH_OBLIGATION_DISCRIMINATOR,
         };
 
+        // change to cpi::slice_invoke_signed,
         invoke_signed(&instruction, &obligation_account_infos, signer_seeds)?;
 
         // Deposit CPI
