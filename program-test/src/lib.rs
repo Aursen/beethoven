@@ -1,14 +1,16 @@
 #![no_std]
 #![allow(unexpected_cfgs)]
 
-use pinocchio::{entrypoint, error::ProgramError, AccountView, Address, ProgramResult};
+use pinocchio::{error::ProgramError, AccountView, Address, ProgramResult};
 
 mod deposit;
 mod swap;
 
+pinocchio::no_allocator!();
 pinocchio::nostd_panic_handler!();
-entrypoint!(process_instruction);
+pinocchio::program_entrypoint!(process_instruction);
 
+#[inline(never)]
 pub fn process_instruction(
     _program_id: &Address,
     accounts: &[AccountView],
