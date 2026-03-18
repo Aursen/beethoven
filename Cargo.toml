@@ -17,6 +17,8 @@ swap = [
     "perena-swap",
     "solfi-swap",
     "solfi_v2-swap",
+    "goonfi-swap",
+    "goonfi_v2-swap",
     "manifest-swap",
     "heaven-swap",
     "aldrin-swap",
@@ -33,6 +35,8 @@ jupiter-deposit = ["dep:beethoven-deposit-jupiter"]
 perena-swap = ["dep:beethoven-swap-perena"]
 solfi-swap = ["dep:beethoven-swap-solfi"]
 solfi_v2-swap = ["dep:beethoven-swap-solfi-v2"]
+goonfi-swap = ["dep:beethoven-swap-goonfi"]
+goonfi_v2-swap = ["dep:beethoven-swap-goonfi-v2"]
 manifest-swap = ["dep:beethoven-swap-manifest"]
 heaven-swap = ["dep:beethoven-swap-heaven"]
 aldrin-swap = ["dep:beethoven-swap-aldrin"]
@@ -53,6 +57,8 @@ beethoven-deposit-jupiter = { path = "crates/deposit/jupiter", optional = true }
 beethoven-swap-perena = { path = "crates/swap/perena", optional = true }
 beethoven-swap-solfi = { path = "crates/swap/solfi", optional = true }
 beethoven-swap-solfi-v2 = { path = "crates/swap/solfi-v2", optional = true }
+beethoven-swap-goonfi = { path = "crates/swap/goonfi", optional = true }
+beethoven-swap-goonfi-v2 = { path = "crates/swap/goonfi-v2", optional = true }
 beethoven-swap-manifest = { path = "crates/swap/manifest", optional = true }
 beethoven-swap-heaven = { path = "crates/swap/heaven", optional = true }
 beethoven-swap-aldrin = { path = "crates/swap/aldrin", optional = true }
@@ -68,6 +74,8 @@ members = [
     "crates/swap/perena",
     "crates/swap/solfi",
     "crates/swap/solfi-v2",
+    "crates/swap/goonfi",
+    "crates/swap/goonfi-v2",
     "crates/swap/manifest",
     "crates/swap/heaven",
     "crates/swap/aldrin",
@@ -90,7 +98,6 @@ solana-rent = "3.1.0"
 solana-sdk-ids = "3.1.0"
 solana-signer = "3.0.0"
 solana-transaction = "3.0.2"
-solana-compute-budget-instruction = "3.1.7"
 spl-token-interface = "2"
 mollusk-svm = "0.10.1"
 mollusk-svm-programs-token = "0.10.1"

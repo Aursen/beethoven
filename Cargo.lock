@@ -494,6 +494,8 @@ dependencies = [
  "beethoven-swap-aldrin-v2",
  "beethoven-swap-futarchy",
  "beethoven-swap-gamma",
+ "beethoven-swap-goonfi",
+ "beethoven-swap-goonfi-v2",
  "beethoven-swap-heaven",
  "beethoven-swap-manifest",
  "beethoven-swap-perena",
@@ -506,7 +508,6 @@ dependencies = [
  "solana-account",
  "solana-account-view",
  "solana-address 2.0.0",
- "solana-compute-budget-instruction",
  "solana-instruction",
  "solana-instruction-view",
  "solana-keypair",
@@ -585,6 +586,28 @@ dependencies = [
 
 [[package]]
 name = "beethoven-swap-gamma"
+version = "0.0.1"
+dependencies = [
+ "beethoven-core",
+ "solana-account-view",
+ "solana-address 2.0.0",
+ "solana-instruction-view",
+ "solana-program-error",
+]
+
+[[package]]
+name = "beethoven-swap-goonfi"
+version = "0.0.1"
+dependencies = [
+ "beethoven-core",
+ "solana-account-view",
+ "solana-address 2.0.0",
+ "solana-instruction-view",
+ "solana-program-error",
+]
+
+[[package]]
+name = "beethoven-swap-goonfi-v2"
 version = "0.0.1"
 dependencies = [
  "beethoven-core",
