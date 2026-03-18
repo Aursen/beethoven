@@ -24,6 +24,10 @@ pub struct PerenaSwapData {
     pub out_index: u8,
 }
 
+impl PerenaSwapData {
+    pub const DATA_LEN: usize = 2;
+}
+
 impl TryFrom<&[u8]> for PerenaSwapData {
     type Error = ProgramError;
 
@@ -36,6 +40,10 @@ impl TryFrom<&[u8]> for PerenaSwapData {
             out_index: data[1],
         })
     }
+}
+
+impl PerenaSwapAccounts<'_> {
+    pub const NUM_ACCOUNTS: usize = 12;
 }
 
 pub struct PerenaSwapAccounts<'info> {

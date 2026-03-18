@@ -23,6 +23,10 @@ pub struct SolFiSwapData {
     pub is_quote_to_base: bool,
 }
 
+impl SolFiSwapData {
+    pub const DATA_LEN: usize = 1;
+}
+
 impl TryFrom<&[u8]> for SolFiSwapData {
     type Error = ProgramError;
 
@@ -34,6 +38,10 @@ impl TryFrom<&[u8]> for SolFiSwapData {
             is_quote_to_base: data[0] != 0,
         })
     }
+}
+
+impl SolFiSwapAccounts<'_> {
+    pub const NUM_ACCOUNTS: usize = 9;
 }
 
 pub struct SolFiSwapAccounts<'info> {

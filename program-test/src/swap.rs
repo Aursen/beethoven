@@ -42,8 +42,8 @@ impl<'a> TryFrom<(&'a [AccountView], &'a [u8])> for SwapInstruction<'a> {
 
     fn try_from((accounts, data): (&'a [AccountView], &'a [u8])) -> Result<Self, Self::Error> {
         let instruction_data = SwapInstructionData::try_from(data)?;
-        let ctx = try_from_swap_context(accounts)?;
-        let swap_data = ctx.try_from_swap_data(instruction_data.extra_data)?;
+        let (ctx, _remaining_accounts) = try_from_swap_context(accounts)?;
+        let (swap_data, _remaining_data) = ctx.try_from_swap_data(instruction_data.extra_data)?;
 
         Ok(Self {
             accounts: ctx,

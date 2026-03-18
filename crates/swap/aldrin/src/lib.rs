@@ -29,6 +29,10 @@ pub struct AldrinSwapData {
     pub side: Side,
 }
 
+impl AldrinSwapData {
+    pub const DATA_LEN: usize = 1;
+}
+
 impl TryFrom<&[u8]> for AldrinSwapData {
     type Error = ProgramError;
 
@@ -43,6 +47,10 @@ impl TryFrom<&[u8]> for AldrinSwapData {
         };
         Ok(Self { side })
     }
+}
+
+impl AldrinSwapAccounts<'_> {
+    pub const NUM_ACCOUNTS: usize = 11;
 }
 
 pub struct AldrinSwapAccounts<'info> {

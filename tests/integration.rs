@@ -1,4 +1,3 @@
-mod deposit;
 #[allow(dead_code)]
 mod helper;
 mod swap;

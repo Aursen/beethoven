@@ -50,6 +50,10 @@ impl<'a> TryFrom<&'a [u8]> for HeavenSwapData<'a> {
     }
 }
 
+impl HeavenSwapAccounts<'_> {
+    pub const NUM_ACCOUNTS: usize = 17;
+}
+
 pub struct HeavenSwapAccounts<'info> {
     pub heaven_program: &'info AccountView,
     pub token_a_owner: &'info AccountView,

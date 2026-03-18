@@ -29,6 +29,10 @@ pub struct FutarchySwapData {
     pub swap_type: SwapType,
 }
 
+impl FutarchySwapData {
+    pub const DATA_LEN: usize = 1;
+}
+
 impl TryFrom<&[u8]> for FutarchySwapData {
     type Error = ProgramError;
 
@@ -43,6 +47,10 @@ impl TryFrom<&[u8]> for FutarchySwapData {
         };
         Ok(Self { swap_type })
     }
+}
+
+impl FutarchySwapAccounts<'_> {
+    pub const NUM_ACCOUNTS: usize = 10;
 }
 
 pub struct FutarchySwapAccounts<'info> {

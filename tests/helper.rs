@@ -27,7 +27,7 @@ pub const KAMINO_PROGRAM_ID: Address = address!("KLend2g3cP87fffoy8q1mQqGKjrxjC8
 pub const JUPITER_PROGRAM_ID: Address = address!("JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4");
 pub const PERENA_PROGRAM_ID: Address = address!("NUMERUNsFCP3kuNmWZuXtm1AaQCPj9uw6Guv2Ekoi5P");
 pub const SOLFI_PROGRAM_ID: Address = address!("SoLFiHG9TfgtdUXUjWAxi3LtvYuFyDLVhBWxdMZxyCe");
-pub const GAMMA_PROGRAM_ID: Address = address!("GAMMA7meSFWaBXF25oSUgmGRwaWJfSFLQzPiSfPKqp2W");
+pub const GAMMA_PROGRAM_ID: Address = address!("GAMMA7meSFWaBXF25oSUgmGRwaW6sCMFLmBNiMSdbHVT");
 pub const MANIFEST_PROGRAM_ID: Address = address!("MNFSTqtC93rEfYHB6hF82sKdZpUDFWkViLByLd1k1Ms");
 pub const SYSTEM_PROGRAM_ID: Address = address!("11111111111111111111111111111111");
 pub const BPF_LOADER: Address = address!("BPFLoader2111111111111111111111111111111111");
@@ -35,6 +35,7 @@ pub const BPF_LOADER: Address = address!("BPFLoader21111111111111111111111111111
 pub mod discriminator {
     pub const DEPOSIT: u8 = 0;
     pub const SWAP: u8 = 1;
+    pub const MULTI_SWAP: u8 = 2;
 }
 
 // =============================================================================
@@ -297,6 +298,31 @@ pub fn build_swap_instruction(
     }
 }
 
+pub struct SwapLeg {
+    pub accounts: Vec<AccountMeta>,
+    pub in_amount: u64,
+    pub min_out_amount: u64,
+    pub extra_data: Vec<u8>,
+}
+
+pub fn build_multi_swap_instruction(legs: Vec<SwapLeg>) -> Instruction {
+    let mut data = vec![discriminator::MULTI_SWAP, legs.len() as u8];
+    let mut all_accounts = Vec::new();
+
+    for leg in &legs {
+        data.extend_from_slice(&leg.in_amount.to_le_bytes());
+        data.extend_from_slice(&leg.min_out_amount.to_le_bytes());
+        data.extend_from_slice(&leg.extra_data);
+        all_accounts.extend(leg.accounts.clone());
+    }
+
+    Instruction {
+        program_id: TEST_PROGRAM_ID,
+        accounts: all_accounts,
+        data,
+    }
+}
+
 // =============================================================================
 // Transaction Helpers
 // =============================================================================
@@ -428,4 +454,49 @@ pub fn load_and_set_json_fixture(svm: &mut LiteSVM, path: &str) -> Address {
 pub fn load_program(svm: &mut LiteSVM, program_id: Address, so_path: &str) {
     let program_bytes = load_fixture_bytes(so_path);
     let _ = svm.add_program(program_id, &program_bytes);
+}
+
+// =============================================================================
+// Shared Test Utilities
+// =============================================================================
+
+pub fn get_token_balance(svm: &LiteSVM, token_account: &Address) -> u64 {
+    let account = svm
+        .get_account(token_account)
+        .expect("Token account not found");
+    TokenAccount::unpack(&account.data)
+        .expect("Failed to unpack token account")
+        .amount
+}
+
+pub fn get_rpc_url() -> String {
+    std::env::var("RPC_URL").unwrap_or_else(|_| "https://api.mainnet-beta.solana.com".to_string())
+}
+
+pub fn common_fixtures_dir() -> String {
+    format!("{}/fixtures/common", env!("CARGO_MANIFEST_DIR"))
+}
+
+pub fn gamma_fixtures_dir() -> String {
+    format!("{}/fixtures/swap/gamma", env!("CARGO_MANIFEST_DIR"))
+}
+
+pub fn manifest_fixtures_dir() -> String {
+    format!("{}/fixtures/swap/manifest", env!("CARGO_MANIFEST_DIR"))
+}
+
+#[cfg(feature = "upstream-bpf")]
+pub fn beethoven_program_path() -> String {
+    format!(
+        "{}/target/bpfel-unknown-none/release/libbeethoven_test.so",
+        env!("CARGO_MANIFEST_DIR")
+    )
+}
+
+#[cfg(not(feature = "upstream-bpf"))]
+pub fn beethoven_program_path() -> String {
+    format!(
+        "{}/target/deploy/beethoven_test.so",
+        env!("CARGO_MANIFEST_DIR")
+    )
 }

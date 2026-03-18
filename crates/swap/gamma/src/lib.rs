@@ -19,6 +19,10 @@ const SWAP_DISCRIMINATOR: [u8; 8] = [239, 82, 192, 187, 160, 26, 223, 223];
 
 pub struct Gamma;
 
+impl GammaSwapAccounts<'_> {
+    pub const NUM_ACCOUNTS: usize = 14;
+}
+
 pub struct GammaSwapAccounts<'info> {
     pub gamma_program: &'info AccountView,
     pub payer: &'info AccountView,

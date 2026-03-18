@@ -24,6 +24,10 @@ pub struct ManifestSwapData {
     pub is_exact_in: bool,
 }
 
+impl ManifestSwapData {
+    pub const DATA_LEN: usize = 2;
+}
+
 impl TryFrom<&[u8]> for ManifestSwapData {
     type Error = ProgramError;
 
@@ -36,6 +40,10 @@ impl TryFrom<&[u8]> for ManifestSwapData {
             is_exact_in: data[1] != 0,
         })
     }
+}
+
+impl ManifestSwapAccounts<'_> {
+    pub const NUM_ACCOUNTS: usize = 15;
 }
 
 pub struct ManifestSwapAccounts<'info> {

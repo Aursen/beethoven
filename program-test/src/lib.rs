@@ -4,6 +4,7 @@
 use pinocchio::{error::ProgramError, AccountView, Address, ProgramResult};
 
 mod deposit;
+mod multi_swap;
 mod swap;
 
 pinocchio::no_allocator!();
@@ -23,6 +24,7 @@ pub fn process_instruction(
     match discriminator {
         0 => deposit::process(accounts, data),
         1 => swap::process(accounts, data),
+        2 => multi_swap::process(accounts, data),
         _ => Err(ProgramError::InvalidInstructionData),
     }
 }
