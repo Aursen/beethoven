@@ -15,10 +15,7 @@ fn split_accounts_checked(
         .ok_or(ProgramError::NotEnoughAccountKeys)
 }
 
-fn split_data_checked(
-    data: &[u8],
-    count: usize,
-) -> Result<(&[u8], &[u8]), ProgramError> {
+fn split_data_checked(data: &[u8], count: usize) -> Result<(&[u8], &[u8]), ProgramError> {
     data.split_at_checked(count)
         .ok_or(ProgramError::InvalidInstructionData)
 }
