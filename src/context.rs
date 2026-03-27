@@ -6,19 +6,19 @@ use {
     solana_program_error::{ProgramError, ProgramResult},
 };
 
-fn split_accounts_checked<'info>(
-    accounts: &'info [AccountView],
+fn split_accounts_checked(
+    accounts: &[AccountView],
     count: usize,
-) -> Result<(&'info [AccountView], &'info [AccountView]), ProgramError> {
+) -> Result<(&[AccountView], &[AccountView]), ProgramError> {
     accounts
         .split_at_checked(count)
         .ok_or(ProgramError::NotEnoughAccountKeys)
 }
 
-fn split_data_checked<'a>(
-    data: &'a [u8],
+fn split_data_checked(
+    data: &[u8],
     count: usize,
-) -> Result<(&'a [u8], &'a [u8]), ProgramError> {
+) -> Result<(&[u8], &[u8]), ProgramError> {
     data.split_at_checked(count)
         .ok_or(ProgramError::InvalidInstructionData)
 }
