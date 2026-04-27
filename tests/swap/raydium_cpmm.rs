@@ -4,6 +4,7 @@ use {
         get_token_balance, load_and_set_json_fixture, load_program, raydium_cpmm_fixtures_dir,
         send_transaction, setup_svm, RAYDIUM_CPMM_PROGRAM_ID, TEST_PROGRAM_ID, TOKEN_PROGRAM_ID,
     },
+    beethoven::SwapProtocolTag,
     solana_address::{address, Address},
     solana_clock::Clock,
     solana_instruction::AccountMeta,
@@ -106,7 +107,13 @@ fn test_raydium_cpmm_swap_cpi() {
     // Raydium CPMM swap_base_input has no extra data
     let extra_data: &[u8] = &[];
 
-    let instruction = build_swap_instruction(accounts, in_amount, min_out_amount, extra_data);
+    let instruction = build_swap_instruction(
+        accounts,
+        in_amount,
+        min_out_amount,
+        SwapProtocolTag::RaydiumCpmm,
+        extra_data,
+    );
 
     // Execute the swap via CPI through beethoven-test program
     let result = send_transaction(&mut svm, &payer, instruction);

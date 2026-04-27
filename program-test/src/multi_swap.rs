@@ -1,5 +1,6 @@
 use {
-    beethoven::{try_from_swap_context, Swap, SwapContext},
+    crate::swap::parse_tagged_swap_context_and_data,
+    beethoven::{Swap, SwapContext},
     pinocchio::{error::ProgramError, AccountView, ProgramResult},
 };
 
@@ -9,10 +10,11 @@ use {
 /// Per swap (repeated num_swaps times):
 ///   [in_amount: u64 LE]
 ///   [min_out_amount: u64 LE]
-///   [extra_data: protocol determines length]
+///   [swap_leg_header: 4 bytes]
+///   [extra_data: exact byte length from the header]
 ///
-/// Accounts are flat concatenation. Each swap consumes its protocol's
-/// known account count from the remaining slice.
+/// Accounts are a flat concatenation. Each swap consumes its fixed account
+/// prefix plus the explicit remaining-account tail from the header.
 pub fn process(accounts: &[AccountView], data: &[u8]) -> ProgramResult {
     if data.is_empty() {
         return Err(ProgramError::InvalidInstructionData);
@@ -39,12 +41,16 @@ pub fn process(accounts: &[AccountView], data: &[u8]) -> ProgramResult {
         );
         remaining_data = &remaining_data[16..];
 
-        let (ctx, next_accounts) = try_from_swap_context(remaining_accounts)?;
-        let (swap_data, next_data) = ctx.try_from_swap_data(remaining_data)?;
-        SwapContext::swap(&ctx, in_amount, min_out_amount, &swap_data)?;
+        let parsed = parse_tagged_swap_context_and_data(remaining_accounts, remaining_data)?;
 
-        remaining_accounts = next_accounts;
-        remaining_data = next_data;
+        SwapContext::swap(&parsed.accounts, in_amount, min_out_amount, &parsed.data)?;
+
+        remaining_accounts = parsed.remaining_accounts;
+        remaining_data = parsed.remaining_data;
+    }
+
+    if !remaining_accounts.is_empty() || !remaining_data.is_empty() {
+        return Err(ProgramError::InvalidInstructionData);
     }
 
     Ok(())

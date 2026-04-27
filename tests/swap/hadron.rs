@@ -4,6 +4,7 @@ use {
         get_token_balance, hadron_fixtures_dir, load_and_set_json_fixture, load_program,
         send_transaction, setup_svm, HADRON_PROGRAM_ID, TEST_PROGRAM_ID, TOKEN_PROGRAM_ID,
     },
+    beethoven::SwapProtocolTag,
     beethoven_client::{SYSVAR_CLOCK_ID, SYSVAR_INSTRUCTIONS_ID},
     solana_address::{address, Address},
     solana_clock::Clock,
@@ -143,7 +144,13 @@ fn test_hadron_swap_cpi() {
     let expiration = timestamp + 3600;
     extra_data.extend_from_slice(&expiration.to_le_bytes());
 
-    let instruction = build_swap_instruction(accounts, in_amount, min_out_amount, &extra_data);
+    let instruction = build_swap_instruction(
+        accounts,
+        in_amount,
+        min_out_amount,
+        SwapProtocolTag::Hadron,
+        &extra_data,
+    );
 
     // Execute the swap via CPI through beethoven-test program
     let result = send_transaction(&mut svm, &payer, instruction);
